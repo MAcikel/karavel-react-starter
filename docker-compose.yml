@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: laravel-backend
+    ports:
+      - "8000:80"
+    networks:
+      - app-network
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/var/www
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react-frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: your_database
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
